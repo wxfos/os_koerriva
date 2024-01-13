@@ -1,3 +1,5 @@
+LD=/usr/local/Cellar/llvm/17.0.2/bin/ld.lld
+CC=/usr/local/Cellar/llvm/17.0.2/bin/clang -target x86_64-linux-gnu 
 arch ?= x86_64
 GCC_FLAGS := -c -ffreestanding -fno-builtin -m64 -fno-pic -mcmodel=large -mno-red-zone -mno-mmx -mno-sse -mno-sse2
 c_32 := i586
@@ -36,7 +38,7 @@ $(iso): $(kernel) $(grub_cfg)
 	@rm -r out/isofiles
 
 $(kernel): $(object_files) $(linker_script)
-	@ld -n -T $(linker_script) -o $(kernel) $(object_files)
+	@$(LD) -n -T $(linker_script) -o $(kernel) $(object_files)
 
 # compile assembly files
 out/asm/%.o: src/asm/%.asm
@@ -45,4 +47,4 @@ out/asm/%.o: src/asm/%.asm
 
 out/c/$(c_64)/%.o: src/c/$(c_64)/%.c
 	@mkdir -p $(shell dirname $@)
-	@gcc $(GCC_FLAGS) $< -o $@
+	@$(CC) $(GCC_FLAGS) $< -o $@
